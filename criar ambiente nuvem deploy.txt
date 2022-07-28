@@ -1,0 +1,47 @@
+1-Abrir o Heroku
+2-Criar um app no Heroku
+3-Criar um add-on Postgres no Heroku
+4-Ir em configurações e copiar o HEROKU_API_KEY
+5-No projeto do Git em configurações, ir em Action/General e habilitar o Github Actions:
+a:Allow all actions and reusable workflows
+6-Ainda em configurações do repositório do Git, ir em Secrets/Actions e criar New repository secret:
+a:HEROKU_API_KEY (chave do Heroku)
+b:HEROKU_APP_NAME (nome do app que vc criou)
+c:HEROKU_EMAIL (seu email cadastrado no Heroku)
+6-No projeto do Git, criar um arquivo para a pipeline que será utilizada pelo Github Actions:
+a:Criar as pastas e o arquivo: .github/workflows/pipeline.yml
+b:Preencher como o exemplo abaixo:
+	# Nome do Workflow
+name: DevOpsLab Pipeline
+
+# Evento que irá acionar a pipeline
+on: 
+  push:
+    branches:
+      - main
+
+jobs:
+  Build:
+    runs-on: ubuntu-latest
+    steps:      
+      - name: Checkout Repo
+        uses: actions/checkout@v2
+      
+      - name: Login to Heroku Container registry
+        env: 
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        run: heroku container:login
+
+      - name: Docker Build Image & Push Heroku Registry
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        run: heroku container:push -a ${{ secrets.HEROKU_APP_NAME }} web
+      
+  DeployHom:
+    needs: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy Heroku
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        run: heroku container:release -a ${{ secrets.HEROKU_APP_NAME }} web 
