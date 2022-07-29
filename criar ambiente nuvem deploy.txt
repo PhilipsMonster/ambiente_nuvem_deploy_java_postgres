@@ -8,7 +8,11 @@ a:Allow all actions and reusable workflows
 a:HEROKU_API_KEY (chave do Heroku)
 b:HEROKU_APP_NAME (nome do app que vc criou)
 c:HEROKU_EMAIL (seu email cadastrado no Heroku)
-6-No projeto do Git, criar um arquivo para a pipeline que será utilizada pelo Github Actions:
+6-Criar na raiz do projeto o arquivo system.properties, para o Heroku entender que iremos trabalhar com o java11
+a:java.runtime.version=11
+7-No application.properties incluir a porta para o Heroku saber qual trabalhar
+a:server.port=${PORT:8080}
+8-No projeto do Git, criar um arquivo para a pipeline que será utilizada pelo Github Actions:
 a:Criar as pastas e o arquivo: .github/workflows/pipeline.yml
 b:Preencher como o exemplo abaixo:
 Obs. Não consegui fazer a pipeline funcionar com subpastas (subtree), por isso deixei um repositório para o backend e outro para o frontend
