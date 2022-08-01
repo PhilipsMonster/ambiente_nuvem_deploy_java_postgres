@@ -1,19 +1,17 @@
-1-Abrir o Heroku
-2-Criar um app no Heroku
-3-Criar um add-on Postgres no Heroku
-4-Ir em configurações e copiar o HEROKU_API_KEY
-5-No projeto do Git em configurações, ir em Action/General e habilitar o Github Actions:
-a:Allow all actions and reusable workflows
-6-Ainda em configurações do repositório do Git, ir em Secrets/Actions e criar New repository secret:
-a:HEROKU_API_KEY (chave do Heroku)
-b:HEROKU_APP_NAME (nome do app que vc criou)
-c:HEROKU_EMAIL (seu email cadastrado no Heroku)
-6-Criar na raiz do projeto o arquivo system.properties, para o Heroku entender que iremos trabalhar com o java11
-a:java.runtime.version=11
-7-No application.properties incluir a porta para o Heroku saber qual trabalhar
-a:server.port=${PORT:8080}
-8-No projeto do Git, criar um arquivo para a pipeline que será utilizada pelo Github Actions:
-a:Criar as pastas e o arquivo: .github/workflows/pipeline.yml
+1-Aguardar a criação da infraestrutura no Heroku pelo procedimento (ambiente_nuvem_infraestrutura_heroku_java_postgres)
+2-No Heroku, ir em configurações e copiar o HEROKU_API_KEY
+3-No projeto do Git, ir em Settings/Action/General e habilitar o Github Actions:
+  a:Allow all actions and reusable workflows
+4-Ainda em configurações do repositório do Git, ir em Secrets/Actions e criar New repository secret:
+  a:HEROKU_API_KEY (chave do Heroku)
+  b:HEROKU_APP_NAME (nome do app que vc criou)
+  c:HEROKU_EMAIL (seu email cadastrado no Heroku)
+5-Criar na raiz do projeto o arquivo system.properties, para o Heroku entender que iremos trabalhar com o java11
+    java.runtime.version=11
+6-No application.properties incluir a porta para o Heroku saber qual trabalhar
+    server.port=${PORT:8080}
+7-No projeto do Git, criar um arquivo para a pipeline que será utilizada pelo Github Actions:
+  a:Criar as pastas e o arquivo: .github/workflows/pipeline.yml
 b:Preencher como o exemplo abaixo:
 Obs. Não consegui fazer a pipeline funcionar com subpastas (subtree), por isso deixei um repositório para o backend e outro para o frontend
 # Nome do Workflow
@@ -23,7 +21,7 @@ name: MainToHomolog
 on: 
   push:
     branches:
-      - main
+      - hom
 
 jobs:
   build:
@@ -68,3 +66,5 @@ jobs:
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
         run: heroku container:release -a ${{ secrets.HEROKU_APP_NAME }} web 
+
+8-Criar a branch "hom", que será a responsável por fazer o deploy no Heroku e fazer o build da imagem no Registry do GCP
